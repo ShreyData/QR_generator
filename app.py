@@ -7,9 +7,8 @@ def create_app():
     app.config.from_object(Config)
 
     app.register_blueprint(routes)
-
     return app
 
 if __name__ == '__main__':
     app = create_app()
-    app.run()
+    app.run(debug=True)

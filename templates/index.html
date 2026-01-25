@@ -2,9 +2,17 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>QR Generator</title>
 </head>
-<body>
 
+<body>
+    <h1>Generate QR From Link</h1>
+
+    <form action ="/generate" method="post">
+        <label>Enter Text or URL :</label><br>
+        <input type="text" name="qr_data" required><br><br>
+
+        <button type="submit">Generate QR</button>
+    </form>
 </body>
 </html>
