@@ -3,9 +3,8 @@ name: Deploy Frontend to Hugging Face
 on:
   push:
     branches: [main]
-    paths:
-      - 'frontend/**'
-      - '.github/workflows/deploy-hf.yml'
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
 
 jobs:
   deploy:
@@ -15,20 +14,20 @@ jobs:
         with:
           fetch-depth: 0
       
-      - name: Push to Hugging Face
+      - name: Force Sync to Hugging Face
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
         run: |
-          # 1. Prepare Deployment Folder
-          mkdir -p deploy_temp
-          cp -r frontend/* deploy_temp/
-          cd deploy_temp
+          # 1. Setup a clean deployment directory
+          mkdir -p hf_deploy
+          cp -r frontend/* hf_deploy/
           
-          # 2. Create the mandatory HF Metadata file
-          cat <<EOF > README.md
+          # 2. CREATE THE MANDATORY CONFIGURATION FILE
+          # This MUST be named README.md and at the ROOT of the space
+          cat <<EOF > hf_deploy/README.md
 ---
-title: QR Elite Designer
-emoji: 💎
+title: QR Elite
+emoji: 🚀
 colorFrom: indigo
 colorTo: slate
 sdk: static
@@ -41,11 +40,11 @@ EOF
           
           # 3. Force Push to Hugging Face Space
           git init -b main
-          git config user.email "bot@github.com"
-          git config user.name "Deployment Bot"
+          git config user.email "deploy@example.com"
+          git config user.name "Elite Deployer"
           git add .
-          git commit -m "Deploying professional frontend"
+          git commit -m "Force deploy professional UI"
           
-          # We use the token to push directly to the main branch of the space
+          # Push only to main branch
           git remote add hf https://ShreyData:${HF_TOKEN}@huggingface.co/spaces/ShreyData/qr-elite
           git push -f hf main
