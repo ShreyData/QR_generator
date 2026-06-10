@@ -7,6 +7,11 @@ routes = Blueprint('routes', __name__)
 def home():
     return render_template('index.html')
 
+@routes.route('/health', methods=['GET'])
+def health_check():
+    """Simple health check endpoint for Render."""
+    return jsonify({"status": "healthy"}), 200
+
 @routes.route("/api/generate", methods=["POST"])
 def api_generate():
     """
