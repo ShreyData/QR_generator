@@ -3,3 +3,4 @@
 .env
 static/exports/
 __pycache__/
+docs/
