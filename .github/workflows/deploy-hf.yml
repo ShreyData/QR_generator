@@ -23,7 +23,7 @@ jobs:
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
         run: |
-          # 1. Prepare the static metadata file inside the frontend folder
+          # 1. Create the mandatory metadata file
           cat <<EOF > frontend/README.md
 ---
 title: QR Elite Designer
@@ -38,17 +38,30 @@ pinned: false
 Professional QR Identity Studio.
 EOF
           
-          # 2. Use the official HF Hub tool to upload the frontend directory
-          # This replaces the manual git push and is much more reliable for Spaces
+          # 2. Debug: List files to ensure we are in the right place
+          echo "Files to be uploaded:"
+          ls -R frontend/
+          
+          # 3. Use the official HF Hub tool with explicit commit message
           python -c "
 from huggingface_hub import HfApi
 import os
+import sys
 
-api = HfApi(token=os.environ['HF_TOKEN'])
-api.upload_folder(
-    folder_path='frontend',
-    repo_id='ShreyData/qr-elite',
-    repo_type='space',
-    delete_patterns='*' # This ensures a clean sync
-)
+try:
+    api = HfApi(token=os.environ['HF_TOKEN'])
+    print('Starting upload to ShreyData/qr-elite...')
+    
+    api.upload_folder(
+        folder_path='frontend',
+        repo_id='ShreyData/qr-elite',
+        repo_type='space',
+        path_in_repo='',
+        commit_message='ELITE_DEPLOY: Update professional UI and assets',
+        commit_description='Deployed via GitHub Actions'
+    )
+    print('Upload completed successfully!')
+except Exception as e:
+    print(f'ERROR DURING DEPLOYMENT: {e}')
+    sys.exit(1)
 "
