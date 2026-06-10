@@ -9,5 +9,3 @@ pinned: false
 
 # QR Elite Designer
 Professional QR Identity Studio.
-
-This folder contains the professional static frontend for the QR Elite application.
