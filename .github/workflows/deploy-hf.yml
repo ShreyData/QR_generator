@@ -27,6 +27,21 @@ jobs:
           cp -r frontend/* deploy_temp/
           cd deploy_temp
           
+          # Generate HF README with required metadata
+          cat <<EOF > README.md
+---
+title: QR Elite Designer
+emoji: 💎
+colorFrom: indigo
+colorTo: slate
+sdk: static
+pinned: false
+---
+
+# QR Elite Designer
+Professional QR Identity Studio.
+EOF
+          
           # Initialize a new git repo and push to HF
           git init
           git add .
