@@ -1,7 +1,8 @@
 import qrcode
 from qrcode.image.styledpil import StyledPilImage
 from qrcode.image.styles.moduledrawers import (
-    SquareModuleDrawer, CircleModuleDrawer, RoundedModuleDrawer, GappedSquareModuleDrawer
+    SquareModuleDrawer, CircleModuleDrawer, RoundedModuleDrawer, 
+    GappedSquareModuleDrawer, VerticalBarsDrawer, HorizontalBarsDrawer
 )
 from qrcode.image.styles.colormasks import SolidFillColorMask
 import io
@@ -30,7 +31,9 @@ def generate_qr_advanced(data, version=1, error_correction=qrcode.constants.ERRO
         'square': SquareModuleDrawer(),
         'circle': CircleModuleDrawer(),
         'rounded': RoundedModuleDrawer(),
-        'gapped': GappedSquareModuleDrawer()
+        'gapped': GappedSquareModuleDrawer(),
+        'vertical': VerticalBarsDrawer(),
+        'horizontal': HorizontalBarsDrawer()
     }
     drawer = drawers.get(module_drawer, SquareModuleDrawer())
 
@@ -39,7 +42,6 @@ def generate_qr_advanced(data, version=1, error_correction=qrcode.constants.ERRO
         f_rgb = ImageColor.getrgb(fill_color)
         b_rgb = ImageColor.getrgb(back_color)
     except Exception as e:
-        print(f"Color conversion error: {e}")
         f_rgb = (0, 0, 0)
         b_rgb = (255, 255, 255)
 
@@ -53,22 +55,19 @@ def generate_qr_advanced(data, version=1, error_correction=qrcode.constants.ERRO
     # Handle Logo
     if logo_base64:
         try:
-            # Clean base64 string
             if ',' in logo_base64:
                 logo_base64 = logo_base64.split(',')[-1]
             
             logo_data = base64.b64decode(logo_base64)
             logo = Image.open(io.BytesIO(logo_data)).convert("RGBA")
             
-            # Calculate logo size (max 20% of QR size)
             qr_width, qr_height = img.size
-            logo_size = int(qr_width * 0.2)
+            logo_size = int(qr_width * 0.22) # Slightly larger logo area
             logo = logo.resize((logo_size, logo_size), Image.Resampling.LANCZOS)
             
-            # Paste logo in the middle
             pos = ((qr_width - logo_size) // 2, (qr_height - logo_size) // 2)
             
-            # Create a white background for the logo to ensure visibility
+            # Create a background for the logo
             white_bg = Image.new("RGBA", (logo_size, logo_size), b_rgb + (255,))
             white_bg.paste(logo, (0, 0), logo)
             

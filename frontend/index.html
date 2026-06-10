@@ -3,152 +3,242 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Professional QR Code Generator</title>
+    <title>QR Elite | Professional QR Designer</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+        :root {
+            --primary: #1e293b;
+            --accent: #3b82f6;
+        }
         body { font-family: 'Inter', sans-serif; }
-        .preview-container { min-height: 300px; }
+        .font-serif { font-family: 'Playfair Display', serif; }
+        .theme-card { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        .theme-card:hover { transform: translateY(-4px); }
+        .theme-card.active { border-color: var(--accent); ring: 2px solid var(--accent); }
+        .glass-panel { background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(12px); }
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: #f1f1f1; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+        .qr-preview-box { background-image: radial-gradient(#e2e8f0 1px, transparent 1px); background-size: 20px 20px; }
     </style>
 </head>
-<body class="bg-gray-50 min-h-screen">
-    <nav class="bg-white shadow-sm border-b border-gray-100 py-4">
-        <div class="container mx-auto px-4 flex justify-between items-center">
-            <h1 class="text-2xl font-bold text-indigo-600 flex items-center">
-                <i class="fas fa-qrcode mr-2"></i> QR Pro
-            </h1>
-            <div class="text-sm text-gray-500">Free & Professional QR Generator</div>
-        </div>
-    </nav>
-
-    <main class="container mx-auto px-4 py-8">
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
-            <!-- Configuration Panel -->
-            <div class="lg:col-span-8 space-y-6">
-                <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
-                    <h2 class="text-lg font-semibold mb-4 text-gray-800 flex items-center">
-                        <i class="fas fa-edit mr-2 text-indigo-500"></i> Content
-                    </h2>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Enter Text or URL</label>
-                        <textarea id="qr-data" class="w-full px-4 py-3 rounded-lg border border-gray-200 focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition" rows="3" placeholder="https://example.com or your text here..."></textarea>
-                    </div>
+<body class="bg-[#f8fafc] text-slate-900 min-h-screen">
+    <!-- Header -->
+    <header class="py-6 border-b border-slate-200 bg-white sticky top-0 z-50">
+        <div class="container mx-auto px-6 flex justify-between items-center">
+            <div class="flex items-center space-x-2">
+                <div class="w-10 h-10 bg-slate-900 rounded-lg flex items-center justify-center text-white shadow-lg">
+                    <i class="fas fa-qrcode text-xl"></i>
                 </div>
+                <span class="text-xl font-bold tracking-tight text-slate-900 uppercase">QR Elite</span>
+            </div>
+            <nav class="hidden md:flex items-center space-x-8 text-sm font-medium text-slate-500">
+                <a href="#" class="hover:text-slate-900 transition">Design</a>
+                <a href="#" class="hover:text-slate-900 transition">API Docs</a>
+                <a href="#" class="bg-slate-900 text-white px-5 py-2.5 rounded-full shadow-sm hover:bg-slate-800 transition">Pro Version</a>
+            </nav>
+        </div>
+    </header>
 
-                <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
-                    <h2 class="text-lg font-semibold mb-4 text-gray-800 flex items-center">
-                        <i class="fas fa-palette mr-2 text-indigo-500"></i> Customization
-                    </h2>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <!-- Shapes -->
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">QR Module Style</label>
-                            <select id="qr-shape" class="w-full px-4 py-2 rounded-lg border border-gray-200 focus:ring-2 focus:ring-indigo-500 outline-none">
-                                <option value="square">Standard Squares</option>
-                                <option value="circle">Dots / Circles</option>
-                                <option value="rounded">Rounded Corners</option>
-                                <option value="gapped">Gapped Squares</option>
-                            </select>
+    <main class="container mx-auto px-6 py-10">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-10">
+            <!-- Sidebar Controls -->
+            <div class="lg:col-span-4 space-y-8">
+                <section>
+                    <h3 class="text-xs font-bold uppercase tracking-widest text-slate-400 mb-4">1. Content Source</h3>
+                    <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+                        <div class="flex border-b border-slate-100">
+                            <button class="flex-1 py-3 text-sm font-medium border-b-2 border-slate-900 bg-slate-50">URL</button>
+                            <button class="flex-1 py-3 text-sm font-medium text-slate-400 hover:bg-slate-50">Text</button>
+                            <button class="flex-1 py-3 text-sm font-medium text-slate-400 hover:bg-slate-50">WiFi</button>
                         </div>
-                        <!-- Colors -->
+                        <div class="p-5">
+                            <textarea id="qr-data" class="w-full text-sm p-4 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-slate-900 outline-none transition" rows="3" placeholder="Paste link or text here..."></textarea>
+                        </div>
+                    </div>
+                </section>
+
+                <section>
+                    <h3 class="text-xs font-bold uppercase tracking-widest text-slate-400 mb-4">2. Pick a Theme Preset</h3>
+                    <div class="grid grid-cols-3 gap-3 max-h-[400px] overflow-y-auto pr-2 custom-scrollbar" id="theme-gallery">
+                        <!-- Themes will be injected by JS -->
+                    </div>
+                </section>
+
+                <section>
+                    <h3 class="text-xs font-bold uppercase tracking-widest text-slate-400 mb-4">3. Precision Tuning</h3>
+                    <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 space-y-6">
                         <div class="grid grid-cols-2 gap-4">
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Foreground</label>
-                                <input type="color" id="qr-fill" value="#000000" class="w-full h-10 rounded-lg cursor-pointer">
+                                <label class="block text-[10px] font-bold uppercase text-slate-400 mb-2">Foreground</label>
+                                <div class="relative">
+                                    <input type="color" id="qr-fill" value="#1e293b" class="w-full h-10 rounded-lg cursor-pointer border-none p-0 bg-transparent">
+                                </div>
                             </div>
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Background</label>
-                                <input type="color" id="qr-back" value="#ffffff" class="w-full h-10 rounded-lg cursor-pointer">
+                                <label class="block text-[10px] font-bold uppercase text-slate-400 mb-2">Background</label>
+                                <input type="color" id="qr-back" value="#ffffff" class="w-full h-10 rounded-lg cursor-pointer border-none p-0 bg-transparent">
                             </div>
                         </div>
-                    </div>
 
-                    <div class="mt-6">
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Add Logo (Optional)</label>
-                        <div class="flex items-center justify-center w-full">
-                            <label class="flex flex-col items-center justify-center w-full h-32 border-2 border-gray-200 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100 transition">
-                                <div class="flex flex-col items-center justify-center pt-5 pb-6">
-                                    <i class="fas fa-cloud-upload-alt text-2xl text-gray-400 mb-2"></i>
-                                    <p class="text-sm text-gray-500" id="logo-filename">Click to upload logo</p>
-                                </div>
-                                <input type="file" id="qr-logo" class="hidden" accept="image/*" />
+                        <div>
+                            <label class="block text-[10px] font-bold uppercase text-slate-400 mb-2">Module Shape</label>
+                            <select id="qr-shape" class="w-full text-sm p-3 bg-slate-50 border border-slate-200 rounded-xl outline-none appearance-none">
+                                <option value="square">Standard Squares</option>
+                                <option value="circle">Modern Dots</option>
+                                <option value="rounded">Rounded Liquid</option>
+                                <option value="vertical">Vertical Bars</option>
+                                <option value="horizontal">Horizontal Bars</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="block text-[10px] font-bold uppercase text-slate-400 mb-2">Center Branding</label>
+                            <label class="flex items-center justify-center p-4 border-2 border-dashed border-slate-200 rounded-xl cursor-pointer hover:bg-slate-50 transition">
+                                <span class="text-xs text-slate-500 font-medium" id="logo-label">Upload Brand Logo</span>
+                                <input type="file" id="qr-logo" class="hidden" accept="image/*">
                             </label>
                         </div>
                     </div>
-                </div>
-                
-                <button id="generate-btn" class="w-full py-4 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl shadow-lg transition transform hover:-translate-y-1 active:scale-95">
-                    Generate Professional QR Code
-                </button>
+                </section>
             </div>
 
-            <!-- Preview Panel -->
-            <div class="lg:col-span-4">
-                <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-100 sticky top-8">
-                    <h2 class="text-lg font-semibold mb-4 text-gray-800">Preview</h2>
-                    <div class="preview-container flex items-center justify-center bg-gray-50 rounded-lg border border-dashed border-gray-200 mb-6 overflow-hidden">
-                        <div id="preview-placeholder" class="text-gray-400 text-center p-8">
-                            <i class="fas fa-qrcode text-6xl mb-4"></i>
-                            <p>Enter data and click generate to see preview</p>
+            <!-- Main Workspace -->
+            <div class="lg:col-span-8">
+                <div class="bg-white rounded-3xl shadow-xl border border-slate-100 overflow-hidden min-h-[600px] flex flex-col">
+                    <div class="p-8 border-b border-slate-50 flex justify-between items-center">
+                        <div>
+                            <h2 class="text-2xl font-serif text-slate-900">Live Workspace</h2>
+                            <p class="text-sm text-slate-400">Refining your digital identity</p>
                         </div>
-                        <img id="qr-preview" class="hidden w-full h-auto" src="" alt="QR Code Preview">
+                        <div class="flex space-x-3">
+                            <button id="reset-btn" class="p-3 text-slate-400 hover:text-slate-900 transition">
+                                <i class="fas fa-undo"></i>
+                            </button>
+                            <button id="generate-btn" class="px-8 py-3 bg-slate-900 text-white rounded-full font-semibold shadow-lg hover:bg-slate-800 transition transform hover:scale-[1.02] active:scale-95">
+                                Generate HD
+                            </button>
+                        </div>
                     </div>
-                    
-                    <button id="download-btn" disabled class="w-full py-3 bg-emerald-500 hover:bg-emerald-600 text-white font-semibold rounded-lg shadow disabled:opacity-50 disabled:cursor-not-allowed transition flex items-center justify-center">
-                        <i class="fas fa-download mr-2"></i> Download HD Image
-                    </button>
+
+                    <div class="flex-1 flex flex-col items-center justify-center p-12 qr-preview-box relative">
+                        <div id="loading-overlay" class="absolute inset-0 bg-white/60 backdrop-blur-sm z-10 hidden flex items-center justify-center">
+                            <div class="w-12 h-12 border-4 border-slate-900 border-t-transparent rounded-full animate-spin"></div>
+                        </div>
+                        
+                        <div id="preview-placeholder" class="text-center space-y-4 max-w-xs">
+                            <div class="w-24 h-24 mx-auto opacity-10">
+                                <i class="fas fa-qrcode text-8xl"></i>
+                            </div>
+                            <p class="text-slate-400 text-sm font-medium">Design your unique QR code using the panel on the left to see the magic happen.</p>
+                        </div>
+                        
+                        <div id="qr-result-container" class="hidden group relative">
+                            <img id="qr-preview" class="w-[380px] h-[380px] object-contain shadow-2xl rounded-2xl bg-white p-4 transition-all duration-500" src="" alt="Result">
+                            <div class="absolute inset-0 bg-slate-900/0 group-hover:bg-slate-900/5 transition rounded-2xl"></div>
+                        </div>
+                    </div>
+
+                    <div class="p-8 bg-slate-50 border-t border-slate-100 flex flex-col sm:flex-row gap-4 items-center justify-between">
+                        <div class="flex items-center space-x-4">
+                            <div class="text-[10px] font-bold uppercase text-slate-400">Format: <span class="text-slate-900 ml-1">PNG 2000px</span></div>
+                            <div class="text-[10px] font-bold uppercase text-slate-400">ECC: <span class="text-slate-900 ml-1">High (30%)</span></div>
+                        </div>
+                        <button id="download-btn" disabled class="w-full sm:w-auto px-10 py-4 bg-blue-600 text-white rounded-full font-bold shadow-xl shadow-blue-200 hover:bg-blue-700 disabled:opacity-30 disabled:shadow-none transition-all flex items-center justify-center">
+                            <i class="fas fa-download mr-2"></i> Export Assets
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
     </main>
 
-    <footer class="mt-12 py-8 border-t border-gray-200 text-center text-gray-500">
-        <p>© 2024 Professional QR Generator. Fast. Free. Customizable.</p>
-    </footer>
-
     <script>
+        const themes = [
+            { name: 'Classic Dark', fill: '#1e293b', back: '#ffffff', shape: 'square', icon: 'square' },
+            { name: 'Snapchat', fill: '#000000', back: '#FFFC00', shape: 'circle', icon: 'ghost' },
+            { name: 'Minimal Dot', fill: '#64748b', back: '#ffffff', shape: 'circle', icon: 'ellipsis' },
+            { name: 'Royal Gold', fill: '#854d0e', back: '#fefce8', shape: 'rounded', icon: 'crown' },
+            { name: 'Cyberpunk', fill: '#f472b6', back: '#1e1b4b', shape: 'gapped', icon: 'bolt' },
+            { name: 'Eco Green', fill: '#166534', back: '#f0fdf4', shape: 'rounded', icon: 'leaf' },
+            { name: 'Midnight', fill: '#ffffff', back: '#0f172a', shape: 'vertical', icon: 'moon' },
+            { name: 'Dino Game', fill: '#22c55e', back: '#f8fafc', shape: 'gapped', icon: 'gamepad' },
+            { name: 'Oceanic', fill: '#0369a1', back: '#f0f9ff', shape: 'horizontal', icon: 'water' },
+            { name: 'Velvet', fill: '#991b1b', back: '#fff1f2', shape: 'rounded', icon: 'heart' },
+            { name: 'Mono Thin', fill: '#000000', back: '#ffffff', shape: 'gapped', icon: 'minus' },
+            { name: 'Corporate', fill: '#1e3a8a', back: '#ffffff', shape: 'square', icon: 'building' },
+            { name: 'Amethyst', fill: '#7e22ce', back: '#faf5ff', shape: 'circle', icon: 'gem' },
+            { name: 'Espresso', fill: '#451a03', back: '#fff7ed', shape: 'rounded', icon: 'coffee' },
+            { name: 'Slate Pro', fill: '#0f172a', back: '#f1f5f9', shape: 'square', icon: 'laptop-code' }
+        ];
+
+        const gallery = document.getElementById('theme-gallery');
         const dataInput = document.getElementById('qr-data');
-        const shapeInput = document.getElementById('qr-shape');
         const fillInput = document.getElementById('qr-fill');
         const backInput = document.getElementById('qr-back');
+        const shapeInput = document.getElementById('qr-shape');
         const logoInput = document.getElementById('qr-logo');
+        const logoLabel = document.getElementById('logo-label');
         const generateBtn = document.getElementById('generate-btn');
-        const previewPlaceholder = document.getElementById('preview-placeholder');
         const previewImg = document.getElementById('qr-preview');
+        const resultContainer = document.getElementById('qr-result-container');
+        const placeholder = document.getElementById('preview-placeholder');
         const downloadBtn = document.getElementById('download-btn');
-        const logoFilename = document.getElementById('logo-filename');
+        const loader = document.getElementById('loading-overlay');
 
         let logoBase64 = null;
 
-        // Handle logo upload and conversion to base64
-        logoInput.addEventListener('change', (e) => {
-            const file = e.target.files[0];
-            if (file) {
-                logoFilename.innerText = file.name;
-                const reader = new FileReader();
-                reader.onload = (event) => {
-                    logoBase64 = event.target.result;
-                };
-                reader.readAsDataURL(file);
-            }
+        // Initialize Themes
+        themes.forEach((theme, index) => {
+            const card = document.createElement('div');
+            card.className = `theme-card p-4 rounded-xl border border-slate-200 bg-white cursor-pointer text-center group ${index === 0 ? 'active border-slate-900 shadow-md' : ''}`;
+            card.innerHTML = `
+                <div class="w-full aspect-square rounded-lg mb-2 flex items-center justify-center overflow-hidden" style="background: ${theme.back}">
+                    <i class="fas fa-${theme.icon} text-lg" style="color: ${theme.fill}"></i>
+                </div>
+                <p class="text-[10px] font-bold uppercase text-slate-500 group-hover:text-slate-900">${theme.name}</p>
+            `;
+            card.onclick = () => {
+                document.querySelectorAll('.theme-card').forEach(c => c.classList.remove('active', 'border-slate-900', 'shadow-md'));
+                card.classList.add('active', 'border-slate-900', 'shadow-md');
+                applyTheme(theme);
+            };
+            gallery.appendChild(card);
         });
 
-        generateBtn.addEventListener('click', async () => {
+        function applyTheme(theme) {
+            fillInput.value = theme.fill;
+            backInput.value = theme.back;
+            shapeInput.value = theme.shape;
+        }
+
+        // Logo Handler
+        logoInput.onchange = (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                logoLabel.innerText = file.name;
+                const reader = new FileReader();
+                reader.onload = (ev) => logoBase64 = ev.target.result;
+                reader.readAsDataURL(file);
+            }
+        };
+
+        generateBtn.onclick = async () => {
             const data = dataInput.value.trim();
             if (!data) {
-                alert('Please enter some data for the QR code.');
+                alert('Please enter a destination URL or text.');
                 return;
             }
 
+            loader.classList.remove('hidden');
             generateBtn.disabled = true;
-            generateBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Generating...';
 
             try {
-                // Change this URL to your Render backend URL after deployment
-                const API_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
-                    ? 'http://127.0.0.1:5000/api/generate' 
-                    : 'https://YOUR-RENDER-APP.onrender.com/api/generate';
+                const API_URL = window.location.hostname.includes('localhost') || window.location.hostname.includes('127.0.0.1')
+                    ? 'http://127.0.0.1:5000/api/generate'
+                    : '/api/generate'; // Auto-relative for production
 
                 const response = await fetch(API_URL, {
                     method: 'POST',
@@ -162,33 +252,37 @@
                     })
                 });
 
-                const result = await response.json();
-
-                if (result.success) {
-                    previewImg.src = result.image;
-                    previewImg.classList.remove('hidden');
-                    previewPlaceholder.classList.add('hidden');
+                const res = await response.json();
+                if (res.success) {
+                    previewImg.src = res.image;
+                    placeholder.classList.add('hidden');
+                    resultContainer.classList.remove('hidden');
                     downloadBtn.disabled = false;
-                } else {
-                    alert('Error: ' + result.error);
+                    previewImg.classList.add('scale-100');
                 }
-            } catch (error) {
-                console.error('Error:', error);
-                alert('Failed to connect to the backend server. Make sure it is running.');
+            } catch (err) {
+                alert('Backend connection error. Please ensure the server is live.');
             } finally {
+                loader.classList.add('hidden');
                 generateBtn.disabled = false;
-                generateBtn.innerText = 'Generate Professional QR Code';
             }
-        });
+        };
 
-        downloadBtn.addEventListener('click', () => {
-            const link = document.createElement('a');
-            link.href = previewImg.src;
-            link.download = `qrcode-${Date.now()}.png`;
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-        });
+        downloadBtn.onclick = () => {
+            const a = document.createElement('a');
+            a.href = previewImg.src;
+            a.download = `QR_ELITE_${Date.now()}.png`;
+            a.click();
+        };
+
+        document.getElementById('reset-btn').onclick = () => {
+            dataInput.value = '';
+            placeholder.classList.remove('hidden');
+            resultContainer.classList.add('hidden');
+            downloadBtn.disabled = true;
+            logoBase64 = null;
+            logoLabel.innerText = 'Upload Brand Logo';
+        };
     </script>
 </body>
 </html>
