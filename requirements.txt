@@ -1,3 +1,5 @@
 flask
-qrcode
+qrcode[pil]
 pillow
+flask-cors
+gunicorn

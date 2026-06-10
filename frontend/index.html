@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Professional QR Code Generator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+        .preview-container { min-height: 300px; }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <nav class="bg-white shadow-sm border-b border-gray-100 py-4">
+        <div class="container mx-auto px-4 flex justify-between items-center">
+            <h1 class="text-2xl font-bold text-indigo-600 flex items-center">
+                <i class="fas fa-qrcode mr-2"></i> QR Pro
+            </h1>
+            <div class="text-sm text-gray-500">Free & Professional QR Generator</div>
+        </div>
+    </nav>
+
+    <main class="container mx-auto px-4 py-8">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            <!-- Configuration Panel -->
+            <div class="lg:col-span-8 space-y-6">
+                <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
+                    <h2 class="text-lg font-semibold mb-4 text-gray-800 flex items-center">
+                        <i class="fas fa-edit mr-2 text-indigo-500"></i> Content
+                    </h2>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Enter Text or URL</label>
+                        <textarea id="qr-data" class="w-full px-4 py-3 rounded-lg border border-gray-200 focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition" rows="3" placeholder="https://example.com or your text here..."></textarea>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
+                    <h2 class="text-lg font-semibold mb-4 text-gray-800 flex items-center">
+                        <i class="fas fa-palette mr-2 text-indigo-500"></i> Customization
+                    </h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- Shapes -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">QR Module Style</label>
+                            <select id="qr-shape" class="w-full px-4 py-2 rounded-lg border border-gray-200 focus:ring-2 focus:ring-indigo-500 outline-none">
+                                <option value="square">Standard Squares</option>
+                                <option value="circle">Dots / Circles</option>
+                                <option value="rounded">Rounded Corners</option>
+                                <option value="gapped">Gapped Squares</option>
+                            </select>
+                        </div>
+                        <!-- Colors -->
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Foreground</label>
+                                <input type="color" id="qr-fill" value="#000000" class="w-full h-10 rounded-lg cursor-pointer">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Background</label>
+                                <input type="color" id="qr-back" value="#ffffff" class="w-full h-10 rounded-lg cursor-pointer">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-6">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Add Logo (Optional)</label>
+                        <div class="flex items-center justify-center w-full">
+                            <label class="flex flex-col items-center justify-center w-full h-32 border-2 border-gray-200 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100 transition">
+                                <div class="flex flex-col items-center justify-center pt-5 pb-6">
+                                    <i class="fas fa-cloud-upload-alt text-2xl text-gray-400 mb-2"></i>
+                                    <p class="text-sm text-gray-500" id="logo-filename">Click to upload logo</p>
+                                </div>
+                                <input type="file" id="qr-logo" class="hidden" accept="image/*" />
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                
+                <button id="generate-btn" class="w-full py-4 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl shadow-lg transition transform hover:-translate-y-1 active:scale-95">
+                    Generate Professional QR Code
+                </button>
+            </div>
+
+            <!-- Preview Panel -->
+            <div class="lg:col-span-4">
+                <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-100 sticky top-8">
+                    <h2 class="text-lg font-semibold mb-4 text-gray-800">Preview</h2>
+                    <div class="preview-container flex items-center justify-center bg-gray-50 rounded-lg border border-dashed border-gray-200 mb-6 overflow-hidden">
+                        <div id="preview-placeholder" class="text-gray-400 text-center p-8">
+                            <i class="fas fa-qrcode text-6xl mb-4"></i>
+                            <p>Enter data and click generate to see preview</p>
+                        </div>
+                        <img id="qr-preview" class="hidden w-full h-auto" src="" alt="QR Code Preview">
+                    </div>
+                    
+                    <button id="download-btn" disabled class="w-full py-3 bg-emerald-500 hover:bg-emerald-600 text-white font-semibold rounded-lg shadow disabled:opacity-50 disabled:cursor-not-allowed transition flex items-center justify-center">
+                        <i class="fas fa-download mr-2"></i> Download HD Image
+                    </button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="mt-12 py-8 border-t border-gray-200 text-center text-gray-500">
+        <p>© 2024 Professional QR Generator. Fast. Free. Customizable.</p>
+    </footer>
+
+    <script>
+        const dataInput = document.getElementById('qr-data');
+        const shapeInput = document.getElementById('qr-shape');
+        const fillInput = document.getElementById('qr-fill');
+        const backInput = document.getElementById('qr-back');
+        const logoInput = document.getElementById('qr-logo');
+        const generateBtn = document.getElementById('generate-btn');
+        const previewPlaceholder = document.getElementById('preview-placeholder');
+        const previewImg = document.getElementById('qr-preview');
+        const downloadBtn = document.getElementById('download-btn');
+        const logoFilename = document.getElementById('logo-filename');
+
+        let logoBase64 = null;
+
+        // Handle logo upload and conversion to base64
+        logoInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                logoFilename.innerText = file.name;
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    logoBase64 = event.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        generateBtn.addEventListener('click', async () => {
+            const data = dataInput.value.trim();
+            if (!data) {
+                alert('Please enter some data for the QR code.');
+                return;
+            }
+
+            generateBtn.disabled = true;
+            generateBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Generating...';
+
+            try {
+                // Change this URL to your Render backend URL after deployment
+                const API_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
+                    ? 'http://127.0.0.1:5000/api/generate' 
+                    : 'https://YOUR-RENDER-APP.onrender.com/api/generate';
+
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        qr_data: data,
+                        fill_color: fillInput.value,
+                        back_color: backInput.value,
+                        shape: shapeInput.value,
+                        logo: logoBase64
+                    })
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    previewImg.src = result.image;
+                    previewImg.classList.remove('hidden');
+                    previewPlaceholder.classList.add('hidden');
+                    downloadBtn.disabled = false;
+                } else {
+                    alert('Error: ' + result.error);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Failed to connect to the backend server. Make sure it is running.');
+            } finally {
+                generateBtn.disabled = false;
+                generateBtn.innerText = 'Generate Professional QR Code';
+            }
+        });
+
+        downloadBtn.addEventListener('click', () => {
+            const link = document.createElement('a');
+            link.href = previewImg.src;
+            link.download = `qrcode-${Date.now()}.png`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        });
+    </script>
+</body>
+</html>

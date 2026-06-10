@@ -6,7 +6,11 @@
 <body>
     <h1>Your QR Code</h1>
 
-    <img src="{{url_for('static', filename ='exports/' + qr_file )}}" width="300">
+    {% if qr_base64 %}
+    <img src="{{ qr_base64 }}" width="300">
+    {% else %}
+    <img src="{{ url_for('static', filename ='exports/' + qr_file ) }}" width="300">
+    {% endif %}
 
     <p><a href="/">Generate Another</a></p>
 </body>
