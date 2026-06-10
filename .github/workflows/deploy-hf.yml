@@ -28,7 +28,7 @@ jobs:
           echo "title: QR Elite" >> hf_final_deploy/README.md
           echo "emoji: 💎" >> hf_final_deploy/README.md
           echo "colorFrom: indigo" >> hf_final_deploy/README.md
-          echo "colorTo: slate" >> hf_final_deploy/README.md
+          echo "colorTo: gray" >> hf_final_deploy/README.md
           echo "sdk: static" >> hf_final_deploy/README.md
           echo "pinned: false" >> hf_final_deploy/README.md
           echo "---" >> hf_final_deploy/README.md
