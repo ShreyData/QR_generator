@@ -24,19 +24,17 @@ jobs:
           cp -r frontend/* hf_final_deploy/
           
           # 3. Create the MANDATORY README with Metadata at the root
-          cat <<EOF > hf_final_deploy/README.md
----
-title: QR Elite
-emoji: 💎
-colorFrom: indigo
-colorTo: slate
-sdk: static
-pinned: false
----
-
-# QR Elite Designer
-Professional QR Identity Studio.
-EOF
+          echo "---" > hf_final_deploy/README.md
+          echo "title: QR Elite" >> hf_final_deploy/README.md
+          echo "emoji: 💎" >> hf_final_deploy/README.md
+          echo "colorFrom: indigo" >> hf_final_deploy/README.md
+          echo "colorTo: slate" >> hf_final_deploy/README.md
+          echo "sdk: static" >> hf_final_deploy/README.md
+          echo "pinned: false" >> hf_final_deploy/README.md
+          echo "---" >> hf_final_deploy/README.md
+          echo "" >> hf_final_deploy/README.md
+          echo "# QR Elite Designer" >> hf_final_deploy/README.md
+          echo "Professional QR Identity Studio." >> hf_final_deploy/README.md
           
           # 4. Initialize and Force Push
           cd hf_final_deploy
