@@ -3,7 +3,6 @@ name: Deploy Frontend to Hugging Face
 on:
   push:
     branches: [main]
-  # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
 jobs:
@@ -11,23 +10,24 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
       
-      - name: Force Sync to Hugging Face
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+          
+      - name: Install huggingface_hub
+        run: pip install huggingface_hub
+
+      - name: Deploy to Hugging Face
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
         run: |
-          # 1. Setup a clean deployment directory
-          mkdir -p hf_deploy
-          cp -r frontend/* hf_deploy/
-          
-          # 2. CREATE THE MANDATORY CONFIGURATION FILE
-          # This MUST be named README.md and at the ROOT of the space
-          cat <<EOF > hf_deploy/README.md
+          # 1. Prepare the static metadata file inside the frontend folder
+          cat <<EOF > frontend/README.md
 ---
-title: QR Elite
-emoji: 🚀
+title: QR Elite Designer
+emoji: 💎
 colorFrom: indigo
 colorTo: slate
 sdk: static
@@ -38,13 +38,17 @@ pinned: false
 Professional QR Identity Studio.
 EOF
           
-          # 3. Force Push to Hugging Face Space
-          git init -b main
-          git config user.email "deploy@example.com"
-          git config user.name "Elite Deployer"
-          git add .
-          git commit -m "Force deploy professional UI"
-          
-          # Push only to main branch
-          git remote add hf https://ShreyData:${HF_TOKEN}@huggingface.co/spaces/ShreyData/qr-elite
-          git push -f hf main
+          # 2. Use the official HF Hub tool to upload the frontend directory
+          # This replaces the manual git push and is much more reliable for Spaces
+          python -c "
+from huggingface_hub import HfApi
+import os
+
+api = HfApi(token=os.environ['HF_TOKEN'])
+api.upload_folder(
+    folder_path='frontend',
+    repo_id='ShreyData/qr-elite',
+    repo_type='space',
+    delete_patterns='*' # This ensures a clean sync
+)
+"
