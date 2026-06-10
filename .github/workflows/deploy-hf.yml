@@ -10,21 +10,20 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      
-      - name: Set up Python
-        uses: actions/setup-python@v4
         with:
-          python-version: '3.10'
-          
-      - name: Install huggingface_hub
-        run: pip install huggingface_hub
-
+          fetch-depth: 0
+      
       - name: Deploy to Hugging Face
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
         run: |
-          # 1. Create the mandatory metadata file
-          cat <<EOF > frontend/README.md
+          # 1. Prepare clean deployment directory
+          mkdir -p hf_sync
+          cp -r frontend/* hf_sync/
+          cd hf_sync
+          
+          # 2. Add the mandatory HF configuration
+          cat <<EOF > README.md
 ---
 title: QR Elite Designer
 emoji: 💎
@@ -37,31 +36,15 @@ pinned: false
 # QR Elite Designer
 Professional QR Identity Studio.
 EOF
-          
-          # 2. Debug: List files to ensure we are in the right place
-          echo "Files to be uploaded:"
-          ls -R frontend/
-          
-          # 3. Use the official HF Hub tool with explicit commit message
-          python -c "
-from huggingface_hub import HfApi
-import os
-import sys
 
-try:
-    api = HfApi(token=os.environ['HF_TOKEN'])
-    print('Starting upload to ShreyData/qr-elite...')
-    
-    api.upload_folder(
-        folder_path='frontend',
-        repo_id='ShreyData/qr-elite',
-        repo_type='space',
-        path_in_repo='',
-        commit_message='ELITE_DEPLOY: Update professional UI and assets',
-        commit_description='Deployed via GitHub Actions'
-    )
-    print('Upload completed successfully!')
-except Exception as e:
-    print(f'ERROR DURING DEPLOYMENT: {e}')
-    sys.exit(1)
-"
+          # 3. Use the exact Git logic from the first successful connection
+          git init
+          git config user.email "bot@github.com"
+          git config user.name "HF Deploy Bot"
+          git add .
+          git commit -m "Deploy: Professional UI Update v2"
+          
+          # Force push from local master to remote main
+          # This was the only command that successfully reached your HF Space
+          git remote add hf https://ShreyData:${HF_TOKEN}@huggingface.co/spaces/ShreyData/qr-elite
+          git push -f hf master:main
