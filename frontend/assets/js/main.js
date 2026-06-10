@@ -11,7 +11,7 @@ const App = {
                  window.location.hostname.includes('localhost') || 
                  window.location.hostname.includes('127.0.0.1'))
                ? 'http://127.0.0.1:5000/api/generate'
-               : 'https://YOUR-RENDER-BACKEND.onrender.com/api/generate'
+               : 'https://qr-elite-api.onrender.com/api/generate'
     },
 
     themes: [
