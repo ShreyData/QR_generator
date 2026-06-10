@@ -7,7 +7,9 @@ const App = {
         logo: null,
         currentTheme: null,
         isGenerating: false,
-        apiUrl: window.location.hostname.includes('localhost') || window.location.hostname.includes('127.0.0.1')
+        apiUrl: (window.location.hostname === '' || 
+                 window.location.hostname.includes('localhost') || 
+                 window.location.hostname.includes('127.0.0.1'))
                ? 'http://127.0.0.1:5000/api/generate'
                : 'https://YOUR-RENDER-BACKEND.onrender.com/api/generate'
     },
