@@ -1,0 +1,51 @@
+name: Deploy Frontend to Hugging Face
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      
+      - name: Deploy to Hugging Face
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+        run: |
+          # 1. Setup a completely clean workspace for HF
+          mkdir -p hf_final_deploy
+          
+          # 2. Copy the PROFESSIONAL frontend files to the root of this workspace
+          cp -r frontend/* hf_final_deploy/
+          
+          # 3. Create the MANDATORY README with Metadata at the root
+          cat <<EOF > hf_final_deploy/README.md
+---
+title: QR Elite
+emoji: 💎
+colorFrom: indigo
+colorTo: slate
+sdk: static
+pinned: false
+---
+
+# QR Elite Designer
+Professional QR Identity Studio.
+EOF
+          
+          # 4. Initialize and Force Push
+          cd hf_final_deploy
+          git init -b main
+          git config user.email "deploy@example.com"
+          git config user.name "Elite Deployer"
+          git add .
+          git commit -m "Elite Deploy: V3 Final Build"
+          
+          # This command uses your token to overwrite the Space with the NEW clean files
+          git remote add hf https://ShreyData:${HF_TOKEN}@huggingface.co/spaces/ShreyData/qr-elite
+          git push -f hf main
