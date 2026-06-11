@@ -1,3 +1,13 @@
+---
+title: QR Elite Designer
+emoji: 🎯
+colorFrom: indigo
+colorTo: gray
+sdk: static
+app_file: index.html
+pinned: false
+---
+
 # QR Elite | Professional QR Identity Designer
 
 [![Python CI](https://github.com/ShreyData/QR_generator/actions/workflows/test.yml/badge.svg)](https://github.com/ShreyData/QR_generator/actions/workflows/test.yml)

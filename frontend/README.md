@@ -1,9 +1,10 @@
 ---
 title: QR Elite Designer
-emoji: 💎
+emoji: 🎯
 colorFrom: indigo
-colorTo: slate
+colorTo: gray
 sdk: static
+app_file: index.html
 pinned: false
 ---
 

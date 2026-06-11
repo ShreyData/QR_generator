@@ -23,21 +23,7 @@ jobs:
           # 2. Copy the PROFESSIONAL frontend files to the root of this workspace
           cp -r frontend/* hf_final_deploy/
           
-          # 3. Create the MANDATORY README with Metadata at the root
-          # We use a strict heredoc with NO indentation for the EOF
-          cat <<EOF > hf_final_deploy/README.md
----
-title: QR Elite Designer
-emoji: 🎯
-colorFrom: indigo
-colorTo: gray
-sdk: static
-app_file: index.html
-pinned: false
----
-EOF
-          
-          # 4. Initialize and Force Push
+          # 3. Initialize and Force Push
           cd hf_final_deploy
           git init -b main
           git config user.email "deploy@example.com"
