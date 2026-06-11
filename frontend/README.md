@@ -1,6 +1,6 @@
 ---
 title: QR Elite Designer
-emoji: 🎯
+emoji: "🎯"
 colorFrom: indigo
 colorTo: gray
 sdk: static

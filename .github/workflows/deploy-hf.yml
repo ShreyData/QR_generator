@@ -17,13 +17,35 @@ jobs:
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
         run: |
+          set -euo pipefail
+
           # 1. Setup a completely clean workspace for HF
           mkdir -p hf_final_deploy
           
           # 2. Copy the PROFESSIONAL frontend files to the root of this workspace
           cp -r frontend/* hf_final_deploy/
+
+          # 3. Write the Space metadata at the very top of README.md
+          cat > hf_final_deploy/README.md <<'EOF'
+          ---
+          title: QR Elite Designer
+          emoji: "🎯"
+          colorFrom: indigo
+          colorTo: gray
+          sdk: static
+          app_file: index.html
+          pinned: false
+          ---
+
+          # QR Elite Designer
+
+          Professional QR Identity Studio.
+          EOF
+
+          test -f hf_final_deploy/index.html
+          grep -q '^sdk: static$' hf_final_deploy/README.md
           
-          # 3. Initialize and Force Push
+          # 4. Initialize and Force Push
           cd hf_final_deploy
           git init -b main
           git config user.email "deploy@example.com"
